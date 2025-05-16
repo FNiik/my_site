@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Fira Mono', monospace;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative; /* Make body relative for absolute positioning of footer */
+            padding-bottom: 20px; /* Add padding at the bottom for the name */
+            box-sizing: border-box; /* Include padding in body's total height */
+        }
+
+        /* Tabs Styles */
+        .tab-container {
+            display: flex;
+            background-color: #2d2d2d;
+            border-bottom: 1px solid #3c3c3c;
+            padding: 8px 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .tab {
+            padding: 6px 15px;
+            margin-right: 4px;
+            cursor: pointer;
+            border: 1px solid #3c3c3c;
+            border-bottom: none;
+            background-color: #252526;
+            color: #b8b8b8;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            font-size: 0.9em;
+            line-height: 1.5;
+            box-sizing: border-box;
+        }
+
+        .tab:hover {
+            background-color: #3c3c3c;
+            color: #fff;
+        }
+
+        .tab.active {
+            background-color: #1e1e1e;
+            color: #fff;
+            border-color: #3c3c3c;
+            border-bottom-color: #1e1e1e;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Content Styles */
+        pre {
+            margin: 0;
+            font-family: 'Fira Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #d4d4d4;
+        }
+
+        h2 {
+            color: #fff;
+            margin-bottom: 16px;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        ul, ol {
+            margin-top: 0;
+            margin-bottom: 16px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        a {
+            color: #569cd6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Python Syntax Highlighting (simplified) */
+        .keyword { color: #c586c0; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .function { color: #dcdcaa; }
+        .builtin { color: #4ec9b0; }
+
+        /* Markdown Styles (simplified) */
+        h1 {
+            color: #fff;
+            font-size: 2em;
+            margin-bottom: 16px;
+            font-weight: bold;
+        }
+        h3{
+            color: #fff;
+            font-size: 1.17em;
+            margin-bottom: 16px;
+            font-weight: bold;
+        }
+        p {
+            margin-bottom: 16px;
+        }
+        .task-list-item {
+            list-style-type: none;
+            margin-left: 0;
+            margin-bottom: 8px;
+        }
+        .task-list-item::before {
+            content: "[ ] ";
+            margin-right: 5px;
+        }
+        .task-list-item.checked::before {
+            content: "[x] ";
+        }
+
+        /* General adjustments for better VSCode feel */
+        body {
+            padding-top: 0;
+        }
+        .tab-container {
+            padding-left: 10px;
+        }
+        .tab {
+            padding: 8px 15px;
+        }
+        .tab-content {
+            padding: 20px;
+            padding-top: 10px;
+        }
+
+        /* Project Styles */
+        .project-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            background-color: #252526;
+        }
+
+        .project-title {
+            color: #fff;
+            font-size: 1.2em;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .project-course {
+            color: #b8b8b8;
+            font-size: 0.9em;
+            margin-bottom: 4px;
+        }
+
+        .project-description {
+            color: #d4d4d4;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        /* Footer Styles */
+        .footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #2d2d2d;
+            color: #b8b8b8;
+            padding: 10px 20px;
+            text-align: center;
+            border-top: 1px solid #3c3c3c;
+            font-size: 0.9em;
+            box-sizing: border-box; /* Include padding in footer's total height */
+        }
+
+        /* Colored text for .txt files */
+        #education pre {
+            color: #d4d4d4; /* Default color */
+        }
+        #education .university {
+            color: #569cd6; /* Blue for University Name */
+        }
+        #education .degree {
+            color: #c586c0; /* Purple for Degree */
+        }
+        #education .date {
+            color: #ce9178; /* Orange for Dates */
+        }
+
+        #skills pre {
+            color: #d4d4d4;
+        }
+        #skills .section-title {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        #skills .skill-category {
+            color: #4ec9b0; /* Teal for Skill Category */
+            font-weight: bold;
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+        #skills .skill {
+            color: #b8b8b8; /* Lighter color for skills */
+        }
+
+        #languages pre{
+            color: #d4d4d4;
+        }
+        #languages .language-name{
+            color: #569cd6;
+            font-weight: bold;
+        }
+        #languages .language-level{
+            color: #b8b8b8;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="tab-container">
+        <div class="tab active" data-target="about_me">about_me.py</div>
+        <div class="tab" data-target="education">education.txt</div>
+        <div class="tab" data-target="coursework">coursework/</div>
+        <div class="tab" data-target="skills">skills.txt</div>
+        <div class="tab" data-target="projects">projects.md</div>
+        <div class="tab" data-target="languages">languages.txt</div>
+    </div>
+
+    <div id="about_me" class="tab-content active">
+        <pre><span class="comment"># About Me</span>
+<span class="keyword">name</span> <span class="op">=</span> <span class="string">"Fatemeh Niknejadi"</span>
+<span class="keyword">title</span> <span class="op">=</span> <span class="string">"Computer Engineering (IT) Student"</span>
+
+<span class="keyword">def</span> <span class="function">get_bio</span>():
+    <span class="string">"""
+    Short biography.
+    """</span>
+    <span class="keyword">return</span> <span class="string">"""I'm Fatemeh Niknejadi, a Computer Engineering (IT) student at Isfahan University of Technology, currently in my 6th semester.
+
+I have a solid understanding of C, C++, and Python, and I'm familiar with the Qt framework.
+
+I'm passionate about backend development using Python and eager to learn technologies like Django. I'm also interested in computer networks and cybersecurity."""</span>
+        </pre>
+    </div>
+
+    <div id="education" class="tab-content">
+        <pre><span class="university">Isfahan University of Technology</span> — <span class="degree">B.Sc. in Computer Engineering (IT)</span>
+<span class="date">Sept 2022 – Present</span>
+Currently in 6th semester (expected graduation: June 2026)</pre>
+    </div>
+
+    <div id="coursework" class="tab-content">
+        <pre>Basic Programming (C)
+Advanced Programming (C++)
+Data Structures
+Algorithms Design
+Discrete Mathematics
+Probability and Engineering Statistics
+Computer Networks + Lab
+Database Systems
+Digital Systems Design I + Lab
+Computer Architecture and Organization
+Microprocessors + Lab
+Theory of Languages and Automata
+Fundamentals of Secure Computing
+Fundamentals of Information Technology
+Technical English for Computer Engineering
+Scientific and Technical Presentation Skills
+General English for Engineering</pre>
+    </div>
+
+    <div id="skills" class="tab-content">
+        <pre><span class="section-title">Technical Skills</span>
+
+<span class="skill-category">Programming:</span> <span class="skill">Python, C++, C</span>
+<span class="skill-category">Tools & Frameworks:</span> <span class="skill">Qt, Git, Cisco Packet Tracer</span>
+<span class="skill-category">Networking:</span> <span class="skill">TCP/IP, socket programming, RIP, OSPF, NAT, DHCP</span>
+<span class="skill-category">OS:</span> <span class="skill">Windows, Linux (basic usage)</span>
+<span class="skill-category">Web:</span> <span class="skill">Basic knowledge of WordPress</span>
+
+<span class="section-title">Soft Skills</span>
+
+<span class="skill-category"></span><span class="skill">Fast learner</span>
+<span class="skill-category"></span><span class="skill">Problem solving</span>
+<span class="skill-category"></span><span class="skill">Team collaboration</span>
+<span class="skill-category"></span><span class="skill">Responsible & detail-oriented</span></pre>
+    </div>
+
+    <div id="projects" class="tab-content">
+        <div class="project-item">
+            <h3 class="project-title">Medical Complex Management System (C)</h3>
+            <p class="project-course">Course: Basic Programming</p>
+            <p class="project-description">Hospital management system handling patient data, appointments, and billing.</p>
+        </div>
+        <div class="project-item">
+            <h3 class="project-title">Messenger Application (Qt)</h3>
+            <p class="project-course">Course: Advanced Programming</p>
+            <p class="project-description">Real-time messaging app with group and private chats.</p>
+        </div>
+        <div class="project-item">
+            <h3 class="project-title">Reverse Shell Implementation (C)</h3>
+            <p class="project-course">Course: Computer Networks</p>
+            <p class="project-description">Built a reverse shell using TCP sockets.</p>
+        </div>
+        <div class="project-item">
+            <h3 class="project-title">TCP Packet Sniffer (CLI)</h3>
+            <p class="project-course">Course: Computer Networks</p>
+            <p class="project-description">Vim-style sniffer that inspects packets like tcpdump.</p>
+        </div>
+        <div class="project-item">
+            <h3 class="project-title">Network Simulation (Packet Tracer)</h3>
+            <p class="project-course">Course: Computer Networks</p>
+            <p class="project-description">Topology simulation including RIP, OSPF, and VLANs.</p>
+        </div>
+        <div class="project-item">
+            <h3 class="project-title">Social Media Trend Analysis</h3>
+            <p class="project-course">Course: Fundamentals of IT</p>
+            <p class="project-description">Data analysis of Instagram trends using Python + Excel.</p>
+        </div>
+    </div>
+
+    <div id="languages" class="tab-content">
+        <pre><span class="language-name">Persian:</span> <span class="language-level">Native</span>
+<span class="language-name">English:</span> <span class="language-level">Upper-intermediate (B2)</span> – able to read technical documents and communicate effectively</pre>
+    </div>
+
+    <div class="footer">
+        <span>Fatemeh Niknejadi</span>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                const targetId = tab.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
